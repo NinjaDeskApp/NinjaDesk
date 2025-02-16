@@ -1,0 +1,16 @@
+@namespace NinjaDesk.Components
+@inherits ComponentBase
+
+<div class="dock-item">
+    <div class="tooltip">@Name</div>
+    <img src="@Icon" style="@Style" />
+</div>
+
+@code
+{
+    [Parameter]
+    public required string Icon { get; set; }
+
+    [Parameter]
+    public required string Name { get; set; }
+}
