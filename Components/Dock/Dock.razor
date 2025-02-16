@@ -1,0 +1,38 @@
+@namespace NinjaDesk.Components
+@inherits ComponentBase
+
+<div class="dock">
+    <div @ref="_container" class="container" @onmousemove="OnMouseMove" @onmouseleave="OnMouseLeave">
+        @foreach (var app in _apps)
+        {
+            <DockItem Icon="@app.Icon" Name="@app.Name" Style="@($"width: {DefaultIconWidth}rem")" />
+        }
+    </div>
+</div>
+
+@code
+{
+    private const double DefaultIconWidth = 3.6;
+
+    private record App(string Icon, string Name);
+
+    protected override string? JSFile
+        => "/Components/Dock/Dock.razor.js";
+
+    private ElementReference _container;
+
+    private List<App> _apps = new List<App>()
+        {
+            new App("/assets/icons/settings.svg", "Settings"),
+            new App("/assets/icons/settings.svg", "Settings"),
+            new App("/assets/icons/settings.svg", "Settings"),
+            new App("/assets/icons/settings.svg", "Settings"),
+            new App("/assets/icons/appstore.svg", "App Store"),
+        };
+    
+    private async Task OnMouseMove(MouseEventArgs e)
+        => await (JSModule?.InvokeVoidAsync("OnMouseMove", _container, e.ClientX, DefaultIconWidth) ?? default);
+
+    private async Task OnMouseLeave(MouseEventArgs e)
+        => await (JSModule?.InvokeVoidAsync("OnMouseLeave", _container, DefaultIconWidth) ?? default);
+}

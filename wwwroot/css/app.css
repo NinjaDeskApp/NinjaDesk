@@ -1,5 +1,14 @@
+:root {
+    --app-color-light-hsl: 240, 3%, 11%;
+    --app-color-grey-100-hsl: 0, 0%, 96%;
+    --app-color-grey-900-hsl: 0, 0%, 13%;
+    --app-color-light-contrast: hsl(240, 24%, 100%);
+    --app-font-family: -apple-system, BlinkMacSystemFont, "Inter", "Helvetica Neue", "Helvetica", "Arial", sans-serif;
+    --double-border: inset 0 0 0 0.9px hsla(240, 24%, 100%, 0.3), 0 0 0 1.2px hsla(240, 3%, 11%, 0.3);
+}
+
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: var(--app-font-family);
 }
 
 * {
