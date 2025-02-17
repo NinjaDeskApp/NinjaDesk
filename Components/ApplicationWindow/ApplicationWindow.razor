@@ -16,10 +16,7 @@
             </div>
         </div>
     </div>
-    <div class="application-client-area">
-        <img src="@Application.Icon" />
-        <label>Apps coming soon!</label>
-    </div>
+    <iframe src="@Application.Main" class="application-client-area" />
     <div class="application-borders" @onpointermove="OnBoderDragMove">
         <div class="left" @ref="_leftBorder.Dom" @onpointerdown="e => OnBoderDragStart(e, _leftBorder)" @onpointerup="e => OnBoderDragStop(e, _leftBorder)" />
         <div class="top" @ref="_topBorder.Dom" @onpointerdown="e => OnBoderDragStart(e, _topBorder)" @onpointerup="e => OnBoderDragStop(e, _topBorder)" />

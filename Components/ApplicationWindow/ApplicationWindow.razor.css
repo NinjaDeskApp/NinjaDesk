@@ -49,22 +49,11 @@
     }
 
     .application-client-area {
-        display: flex;
         flex: 1;
-        justify-content: center;
-        align-items: center;
-        flex-direction: column;
-
-        img {
-            width: 8rem;
-            height: 8rem;
-            margin: 1rem;
-        }
-
-        label {
-            color: var(--app-color-light-contrast);
-            font-size: 1.618rem;
-        }
+        border: 0;
+        padding: 10px;
+        margin: 0;
+        overflow: hidden;
     }
 
     .application-borders {
