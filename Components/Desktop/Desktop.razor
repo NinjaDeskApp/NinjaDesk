@@ -5,15 +5,32 @@
     <div class="windows-area">
         @foreach (var app in _openedApps)
         {
-            <ApplicationWindow Application="@app.Application" Left="@app.Left" Top="@app.Top" Width="@app.Width" Height="@app.Height" />
+            <ApplicationWindow
+                Application="@app.Application"
+                Left="@app.Left"
+                Top="@app.Top"
+                Width="@app.Width"
+                Height="@app.Height"
+                ZIndex="@app.ZIndex"
+                OnFocus="e => FocusApplication(app)"
+                OnMove="e => MoveApplication(app, (int)e.MovementX, (int)e.MovementY)"
+                OnClose="e => CloseApplication(app)" />
         }
     </div>
-    <Dock Apps="_apps" Open="Open" />
+    <Dock Apps="_apps" OnOpen="app => Open(app)" />
 </div>
 
 @code
 {
-    private record ApplicationWindowVM(Application Application, int Left, int Top, int Width, int Height);
+    private record ApplicationWindowVM
+    {
+        public required Application Application { get; set; }
+        public int Left { get; set; }
+        public int Top { get; set; }
+        public int Width { get; set; }
+        public int Height { get; set; }
+        public int ZIndex { get; set; }
+    }
 
     private List<Application> _apps = new List<Application>()
         {
@@ -28,7 +45,36 @@
 
     private void Open(Application app)
     {
-        _openedApps.Add(new ApplicationWindowVM(app, 400, 400, 600, 500));
-        StateHasChanged();
+        var topApp = _openedApps.FirstOrDefault(a => a.ZIndex == _openedApps.Count);
+        var (left, top) = topApp == null ? (50, 50) : (topApp.Left + 50, topApp.Top + 50);
+        _openedApps.Add(new ApplicationWindowVM() { Application = app, Left = left, Top = top, Width = 600, Height = 500, ZIndex = _openedApps.Count + 1 });
+    }
+
+    private void FocusApplication(ApplicationWindowVM app)
+    {
+        if (app.ZIndex == _openedApps.Count)
+        {
+            return;
+        }
+
+        foreach (var a in _openedApps)
+        {
+            if (a.ZIndex > app.ZIndex)
+            {
+                --a.ZIndex;
+            }
+        }
+        app.ZIndex = _openedApps.Count;
+    }
+
+    private void MoveApplication(ApplicationWindowVM app, int offsetX, int offsetY)
+    {
+        app.Left += offsetX;
+        app.Top += offsetY;
+    }
+
+    private void CloseApplication(ApplicationWindowVM app)
+    {
+        _openedApps.Remove(app);
     }
 }

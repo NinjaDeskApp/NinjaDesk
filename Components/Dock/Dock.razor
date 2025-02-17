@@ -7,7 +7,7 @@
         <div @ref="_container" class="container" @onmousemove="OnMouseMove" @onmouseleave="OnMouseLeave">
             @foreach (var app in Apps)
             {
-                <DockItem Icon="@app.Icon" Name="@app.Name" Style="@($"width: {DefaultIconWidth}rem")" OnClick="_ => Open?.Invoke(app)" />
+                <DockItem Icon="@app.Icon" Name="@app.Name" Style="@($"width: {DefaultIconWidth}rem")" OnClick="e => OnOpen.InvokeAsync(app)" />
             }
         </div>
     }
@@ -26,7 +26,7 @@
     public IEnumerable<Application>? Apps { get; set; }
     
     [Parameter]
-    public Action<Application>? Open { get; set; }
+    public EventCallback<Application> OnOpen { get; set; }
 
     private async Task OnMouseMove(MouseEventArgs e)
         => await (JSModule?.InvokeVoidAsync("OnMouseMove", _container, e.ClientX, DefaultIconWidth) ?? default);

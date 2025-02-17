@@ -1,10 +1,11 @@
 @namespace NinjaDesk.Components
 @inherits ComponentBase
 
-<div class="application-window" style="@MergedStyle">
+<div class="application-window" style="@MergedStyle" @onpointerdown="OnClick">
     <div class="application-bar">
+        <div @ref="_dragbar" class="application-dragbar" @onpointerdown="OnDragStart" @onpointerup="OnDragStop" @onpointermove="OnDragMove" />
         <div class="application-buttons">
-            <div class="btn" style="--bgcolor: #ff5f56; --border-color: #e0443e;">
+            <div class="btn" style="--bgcolor: #ff5f56; --border-color: #e0443e;" @onclick="OnClose">
                 <svg width="7" height="7" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="#000" stroke-width="1.2" stroke-linecap="round" d="M1.182 5.99L5.99 1.182m0 4.95L1.182 1.323"></path></svg>
             </div>
             <div class="btn" style="--bgcolor: #ffbd2e; --border-color: #dea123;">
@@ -38,13 +39,51 @@
     [Parameter]
     public int Height { get; set; }
 
+    [Parameter]
+    public int ZIndex { get; set; }
+
+    [Parameter]
+    public EventCallback OnFocus { get; set; }
+
+    [Parameter]
+    public EventCallback<PointerEventArgs> OnMove { get; set; }
+    
+    [Parameter]
+    public EventCallback OnClose { get; set; }
+
     private string MergedStyle =>
         new StyleBuilder()
             .AddStyle("left", $"{Left}px")
             .AddStyle("top", $"{Top}px")
             .AddStyle("width", $"{Width}px")
             .AddStyle("height", $"{Height}px")
+            .AddStyle("z-index", ZIndex.ToString())
             .AddStyle(Style)
             .Build();
+    
+    private ElementReference _dragbar;
+    private bool _dragStart;
 
+    private async void OnClick(PointerEventArgs e)
+        => await OnFocus.InvokeAsync();
+
+    private async void OnDragStart(PointerEventArgs e)
+    {
+        await JS.InvokeVoidAsync("ObjInvoke", _dragbar, "setPointerCapture", e.PointerId);
+        _dragStart = true;
+    }
+
+    private async void OnDragStop(PointerEventArgs e)
+    {
+        await JS.InvokeVoidAsync("ObjInvoke", _dragbar, "releasePointerCapture", e.PointerId);
+        _dragStart = false;
+    }
+
+    private void OnDragMove(PointerEventArgs e)
+    {
+        if (_dragStart)
+        {
+            OnMove.InvokeAsync(e);
+        }
+    }
 }
