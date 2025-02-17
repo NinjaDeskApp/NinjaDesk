@@ -1,0 +1,50 @@
+@namespace NinjaDesk.Components
+@inherits ComponentBase
+
+<div class="application-window" style="@MergedStyle">
+    <div class="application-bar">
+        <div class="application-buttons">
+            <div class="btn" style="--bgcolor: #ff5f56; --border-color: #e0443e;">
+                <svg width="7" height="7" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="#000" stroke-width="1.2" stroke-linecap="round" d="M1.182 5.99L5.99 1.182m0 4.95L1.182 1.323"></path></svg>
+            </div>
+            <div class="btn" style="--bgcolor: #ffbd2e; --border-color: #dea123;">
+                <svg width="6" height="1" fill="none" xmlns="http://www.w3.org/2000/svg"><path stroke="#000" stroke-width="2" stroke-linecap="round" d="M.61.703h5.8"></path></svg>
+            </div>
+            <div class="btn" style="--bgcolor: #37c93f; --border-color: #1aab29;">
+                <svg viewBox="0 0 13 13" xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2"><path d="M4.871 3.553L9.37 8.098V3.553H4.871zm3.134 5.769L3.506 4.777v4.545h4.499z"></path><circle cx="6.438" cy="6.438" r="6.438" fill="none"></circle></svg>
+            </div>
+        </div>
+    </div>
+    <div class="application-client-area">
+        <img src="@Application.Icon" />
+        <label>Apps coming soon!</label>
+    </div>
+</div>
+
+@code
+{
+    [Parameter]
+    public required Application Application { get; set; }
+
+    [Parameter]
+    public int Left { get; set; }
+
+    [Parameter]
+    public int Top { get; set; }
+
+    [Parameter]
+    public int Width { get; set; }
+
+    [Parameter]
+    public int Height { get; set; }
+
+    private string MergedStyle =>
+        new StyleBuilder()
+            .AddStyle("left", $"{Left}px")
+            .AddStyle("top", $"{Top}px")
+            .AddStyle("width", $"{Width}px")
+            .AddStyle("height", $"{Height}px")
+            .AddStyle(Style)
+            .Build();
+
+}
