@@ -1,0 +1,6 @@
+{
+    "id": "c56d4ae4-d0fc-4de5-84b8-cbd3528c1562",
+    "displayName": "Caculator",
+    "icon": "assets/calculator.webp",
+    "main": "index.html"
+}

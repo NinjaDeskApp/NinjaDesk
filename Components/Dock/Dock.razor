@@ -7,7 +7,7 @@
         <div @ref="_container" class="container" @onmousemove="OnMouseMove" @onmouseleave="OnMouseLeave">
             @foreach (var app in Apps)
             {
-                <DockItem Icon="@app.Icon" Name="@app.Name" Style="@($"width: {DefaultIconWidth}rem")" OnClick="e => OnOpen.InvokeAsync(app)" />
+                <DockItem Icon="@app.Icon" Name="@app.DisplayName" Style="@($"width: {DefaultIconWidth}rem")" OnClick="e => OnOpen.InvokeAsync(app)" />
             }
         </div>
     }

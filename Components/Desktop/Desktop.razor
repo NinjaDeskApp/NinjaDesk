@@ -1,4 +1,5 @@
 @namespace NinjaDesk.Components
+@inject HttpClient HttpClient
 @inherits ComponentBase
 
 <div class="desktop">
@@ -32,16 +33,14 @@
         public int ZIndex { get; set; }
     }
 
-    private List<Application> _apps = new List<Application>()
-        {
-            new Application() { Name = "Settings", Icon = "/assets/icons/settings.svg" },
-            new Application() { Name = "Settings", Icon = "/assets/icons/settings.svg" },
-            new Application() { Name = "Settings", Icon = "/assets/icons/settings.svg" },
-            new Application() { Name = "Settings", Icon = "/assets/icons/settings.svg" },
-            new Application() { Name = "App Store", Icon = "/assets/icons/appstore.svg" },
-        };
+    private IEnumerable<Application>? _apps;
 
     private List<ApplicationWindowVM> _openedApps = new List<ApplicationWindowVM>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        _apps = await GetApplicationsAsync();
+    }
 
     private void Open(Application app)
     {
@@ -86,5 +85,34 @@
     private void CloseApplication(ApplicationWindowVM app)
     {
         _openedApps.Remove(app);
+    }
+
+    private async Task<IEnumerable<Application>> GetApplicationsAsync()
+    {
+        var appsBaseAddress = new Uri(HttpClient.BaseAddress ?? new Uri("/"), "apps/");
+        var apps = new List<Application>();
+        var appAddress = await HttpClient.GetFromJsonAsync<string[]>(new Uri(appsBaseAddress, "apps.json"));
+        if (appAddress != null)
+        {
+            foreach (var address in appAddress)
+            {
+                var addr = ToAbsoluteUri(address, appsBaseAddress);
+                var app = await HttpClient.GetFromJsonAsync<Application>(addr);
+                if (app != null)
+                {
+                    var appBaseUri = new Uri(new Uri(addr), ".");
+                    app.Icon = ToAbsoluteUri(app.Icon, appBaseUri);
+                    app.Main = ToAbsoluteUri(app.Main, appBaseUri);
+                    apps.Add(app);
+                }
+            }
+        }
+        return apps;
+    }
+
+    private string ToAbsoluteUri(string uri, Uri baseUri)
+    {
+        var u = new Uri(uri, UriKind.RelativeOrAbsolute);
+        return u.IsAbsoluteUri ? u.ToString() : new Uri(baseUri, uri).ToString();
     }
 }
