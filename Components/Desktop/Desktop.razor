@@ -1,0 +1,34 @@
+@namespace NinjaDesk.Components
+@inherits ComponentBase
+
+<div class="desktop">
+    <div class="windows-area">
+        @foreach (var app in _openedApps)
+        {
+            <ApplicationWindow Application="@app.Application" Left="@app.Left" Top="@app.Top" Width="@app.Width" Height="@app.Height" />
+        }
+    </div>
+    <Dock Apps="_apps" Open="Open" />
+</div>
+
+@code
+{
+    private record ApplicationWindowVM(Application Application, int Left, int Top, int Width, int Height);
+
+    private List<Application> _apps = new List<Application>()
+        {
+            new Application() { Name = "Settings", Icon = "/assets/icons/settings.svg" },
+            new Application() { Name = "Settings", Icon = "/assets/icons/settings.svg" },
+            new Application() { Name = "Settings", Icon = "/assets/icons/settings.svg" },
+            new Application() { Name = "Settings", Icon = "/assets/icons/settings.svg" },
+            new Application() { Name = "App Store", Icon = "/assets/icons/appstore.svg" },
+        };
+
+    private List<ApplicationWindowVM> _openedApps = new List<ApplicationWindowVM>();
+
+    private void Open(Application app)
+    {
+        _openedApps.Add(new ApplicationWindowVM(app, 400, 400, 600, 500));
+        StateHasChanged();
+    }
+}
