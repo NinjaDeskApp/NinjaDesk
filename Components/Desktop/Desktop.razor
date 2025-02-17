@@ -13,7 +13,7 @@
                 Height="@app.Height"
                 ZIndex="@app.ZIndex"
                 OnFocus="e => FocusApplication(app)"
-                OnMove="e => MoveApplication(app, (int)e.MovementX, (int)e.MovementY)"
+                OnMove="e => MoveApplication(app, e.Left, e.Top, e.Width, e.Height)"
                 OnClose="e => CloseApplication(app)" />
         }
     </div>
@@ -45,9 +45,17 @@
 
     private void Open(Application app)
     {
-        var topApp = _openedApps.FirstOrDefault(a => a.ZIndex == _openedApps.Count);
-        var (left, top) = topApp == null ? (50, 50) : (topApp.Left + 50, topApp.Top + 50);
-        _openedApps.Add(new ApplicationWindowVM() { Application = app, Left = left, Top = top, Width = 600, Height = 500, ZIndex = _openedApps.Count + 1 });
+        var openedApp = _openedApps.FirstOrDefault(a => a.Application == app);
+        if (openedApp == null)
+        {
+            var topApp = _openedApps.FirstOrDefault(a => a.ZIndex == _openedApps.Count);
+            var (left, top) = topApp == null ? (50, 50) : (topApp.Left + 50, topApp.Top + 50);
+            _openedApps.Add(new ApplicationWindowVM() { Application = app, Left = left, Top = top, Width = 600, Height = 500, ZIndex = _openedApps.Count + 1 });
+        }
+        else
+        {
+            FocusApplication(openedApp);
+        }
     }
 
     private void FocusApplication(ApplicationWindowVM app)
@@ -67,10 +75,12 @@
         app.ZIndex = _openedApps.Count;
     }
 
-    private void MoveApplication(ApplicationWindowVM app, int offsetX, int offsetY)
+    private void MoveApplication(ApplicationWindowVM app, int left, int top, int width, int height)
     {
-        app.Left += offsetX;
-        app.Top += offsetY;
+        app.Left = left;
+        app.Top = top;
+        app.Width = width;
+        app.Height = height;
     }
 
     private void CloseApplication(ApplicationWindowVM app)
